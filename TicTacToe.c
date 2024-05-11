@@ -5,7 +5,9 @@
 // compile cmd: gcc -g -o TicTacToe.exe ./TicTacToe.c
 // run cmd: ./TicTacToe.exe
 void printBoard(char[3][3], int, int);
-bool checkIfWin();
+bool checkIfWin(char[3][3]);
+bool checkForTie(char[3][3]);
+void playerTurn(int *row, int *col, char *turn);
 
 int main()
 {
@@ -20,43 +22,20 @@ int main()
     char *turn = p1Turn == true ? "Player 1's Turn\n" : "Player 2's Turn\n";
     int row;
     int col;
-    printf("%s", turn);
-    printf("Row:");
-    scanf("%d", &row);
-    while (row < 1 || row > 3)
-    {
-      printf("Please enter a row between 1 and 3.\nRow:");
-      scanf("%d", &row);
-    }
-    printf("Column:");
-    scanf("%d", &col);
-    while (col < 1 || col > 3)
-    {
-      printf("Please enter a column between 1 and 3.\nColumn:");
-      scanf("%d", &col);
-    }
+    playerTurn(&row, &col, turn);
     while (boardPosition[row - 1][col - 1] != 'e')
     {
       printf("\nPlease choose a spot another player isn't on.\n");
-      printf("%s", turn);
-      printf("Row:");
-      scanf("%d", &row);
-      while (row < 1 || row > 3)
-      {
-        printf("Please enter a row between 1 and 3.\nRow:");
-        scanf("%d", &row);
-      }
-      printf("Column:");
-      scanf("%d", &col);
-      while (col < 1 || col > 3)
-      {
-        printf("Please enter a column between 1 and 3.\nColumn:");
-        scanf("%d", &col);
-      }
+      playerTurn(&row, &col, turn);
     }
     boardPosition[row - 1][col - 1] = (p1Turn == true ? 'x' : 'o');
     printBoard(boardPosition, 3, 3);
     p1Turn = !p1Turn;
+    if (checkForTie(boardPosition) && checkIfWin(boardPosition) == false)
+    {
+      printf("Its a tie!!!!");
+      return 0;
+    }
   } while (checkIfWin(boardPosition) == false);
 
   if (p1Turn)
@@ -125,4 +104,38 @@ bool checkIfWin(char boardPosition[3][3])
   }
 
   return false;
+}
+
+bool checkForTie(char boardPosition[3][3])
+{
+  for (int i = 0; i < 3; i++)
+  {
+    for (int j = 0; j < 3; j++)
+    {
+      if (boardPosition[i][j] == 'e')
+      {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+void playerTurn(int *row, int *col, char *turn)
+{
+  printf("%s", turn);
+  printf("Row:");
+  scanf("%d", row);
+  while (*row < 1 || *row > 3)
+  {
+    printf("Please enter a row between 1 and 3.\nRow:");
+    scanf("%d", row);
+  }
+  printf("Column:");
+  scanf("%d", col);
+  while (*col < 1 || *col > 3)
+  {
+    printf("Please enter a column between 1 and 3.\nColumn:");
+    scanf("%d", col);
+  }
 }
